@@ -3,6 +3,7 @@ package org.example.store.controller;
 import org.example.store.service.StoreService;
 import org.example.store.service.dto.Paging;
 import org.example.store.service.dto.StoreDto;
+import org.example.store.service.validation.CustomNullableNotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -69,7 +70,7 @@ public class StoreController {
     public ResponseEntity<?> findByCompanyCode(
             @RequestParam(defaultValue = "10", value = "size") Integer size,
             @RequestParam(defaultValue = "0", value = "page") Integer page,
-            @RequestParam(defaultValue = "", value = "companyCode") String companyCode) {
+            @RequestParam(defaultValue = "", value = "companyCode") @CustomNullableNotBlank String companyCode) {
 
         Paging paging = new Paging(size, page);
 
