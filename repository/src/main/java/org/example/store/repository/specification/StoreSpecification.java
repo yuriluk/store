@@ -13,4 +13,18 @@ public final class StoreSpecification {
                 criteriaBuilder
                         .like(root.get("companyCode").get("code"), '%' + companyCode.toUpperCase() + '%');
     }
+
+
+    public static Specification<Store> findByGeoLocationLatitude(Double latitude) {
+        return (Specification<Store>) (root, query, criteriaBuilder) ->
+                criteriaBuilder
+                        .equal(root.get("geoLocation").get("latitude"), latitude);
+    }
+
+
+    public static Specification<Store> findByGeoLocationLongitude(Double longitude) {
+        return (Specification<Store>) (root, query, criteriaBuilder) ->
+                criteriaBuilder
+                        .equal(root.get("geoLocation").get("longitude"), longitude);
+    }
 }

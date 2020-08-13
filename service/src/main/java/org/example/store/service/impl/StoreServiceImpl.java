@@ -18,6 +18,7 @@ import org.example.store.service.exception.ServiceException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +73,21 @@ public class StoreServiceImpl implements StoreService {
 
     @Transactional
     @Override
+    public StoreDto update(StoreDto storeDto) {
+        Store storeFromDb = storeRepository.findById(storeDto.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(storeDto.getId()));
+
+        Store storeForUpdate = storeMapper.toEntity(storeDto);
+        storeForUpdate.setAddress(resolveAddress(storeForUpdate));
+        storeForUpdate.setCompanyCode(getCompanyCodeOrThrowException(storeForUpdate));
+        storeForUpdate.setGeoLocation(resolveLocation(storeForUpdate));
+
+        return storeMapper.toDto(storeRepository.save(storeForUpdate));
+    }
+
+
+    @Transactional
+    @Override
     public void delete(Long id) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(id));
@@ -102,18 +118,6 @@ public class StoreServiceImpl implements StoreService {
 
         Page<Store> page = storeRepository.findAll(specification, pageable);
 
-//        Page<Store> page;
-//        if (!companyCode.equals("")) {
-//            CompanyCode code = companyCodeRepository.findByCodeIgnoreCase(companyCode)
-//                    .orElseThrow(() -> new ResourceNotFoundException(companyCode));
-//            page = storeRepository.findByCompanyCode(code, pageable);
-//        } else {
-//            Specification<Store> specification = Specification
-//                    .where(findByCompanyCodeLike(companyCode));
-//
-//            page = storeRepository.findAll(specification, pageable);
-//        }
-
         List<Store> stores = page.toList();
         return
                 PageWrapper.of(
@@ -124,10 +128,31 @@ public class StoreServiceImpl implements StoreService {
                         page.getNumberOfElements());
     }
 
-    @Transactional
+
     @Override
-    public StoreDto update(StoreDto storeDto) {
-     return null;
+    public PageWrapper<StoreDto> findBySearchParams(Integer pageNo, Integer pageSize, String sortBy,
+                                                    String companyCode, Double latitude, Double longitude) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Specification<Store> specification = getStoreSpecification(companyCode, latitude, longitude);
+        Page<Store> page = storeRepository.findAll(specification, pageable);
+        List<Store> stores = page.toList();
+        return
+                PageWrapper.of(
+                        storeMapper.toDtoList(stores),
+                        page.getTotalPages(),
+                        page.getTotalElements(),
+                        pageNo,
+                        page.getNumberOfElements());
+    }
+
+    private Specification<Store> getStoreSpecification(String companyCode, Double latitude, Double longitude) {
+
+        Specification<Store> specification =
+                Specification
+                        .where(findByCompanyCodeLike(companyCode))
+                        .or(findByGeoLocationLatitude(latitude).and(findByGeoLocationLongitude(longitude)));
+        return specification;
     }
 
 
@@ -166,7 +191,7 @@ public class StoreServiceImpl implements StoreService {
         Address address = store.getAddress();
         if (isObjectExists(address)) {
             if (Objects.isNull(address.getId())) {
-                address = getExistingAddress(address);
+                address = getExistingAddressOrAddNew(address);
             } else {
                 address = getExistingAddressByIdOrThrowException(address);
             }
@@ -175,7 +200,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
 
-    private Address getExistingAddress(Address address) {
+    private Address getExistingAddressOrAddNew(Address address) {
         return addressRepository.findByCityAndStreetAndHouseNumber(address.getCity(),
                 address.getStreet(),
                 address.getHouseNumber())
@@ -192,7 +217,7 @@ public class StoreServiceImpl implements StoreService {
 
     private CompanyCode getCompanyCodeOrThrowException(Store store) {
         CompanyCode code = store.getCompanyCode();
-        return companyCodeRepository.findByCode(code.getCode())
+        return companyCodeRepository.findByCodeIgnoreCase(code.getCode())
                 .orElseThrow(() -> new ResourceNotFoundException("Company Code =" + code.getCode()
                         + " is not allowed!"));
     }
