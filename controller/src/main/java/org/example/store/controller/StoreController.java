@@ -66,11 +66,11 @@ public class StoreController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping()
+    @GetMapping("/byCompanyCode")
     public ResponseEntity<?> findByCompanyCode(
             @RequestParam(defaultValue = "10", value = "size") Integer size,
             @RequestParam(defaultValue = "0", value = "page") Integer page,
-            @RequestParam(defaultValue = "", value = "companyCode") @CustomNullableNotBlank String companyCode) {
+            @RequestParam(defaultValue = "", value = "companyCode") String companyCode) {
 
         Paging paging = new Paging(size, page);
 
@@ -78,8 +78,8 @@ public class StoreController {
     }
 
 
-    @GetMapping("/byParams")
-    public ResponseEntity<?> findBySearchParams(
+    @GetMapping("/sortedByDistance")
+    public ResponseEntity<?> findByCompanyCodeAndSortedByDistance(
             @RequestParam(defaultValue = "0", value = "pageNo") Integer pageNo,
             @RequestParam(defaultValue = "10", value = "pageSize") Integer pageSize,
             @RequestParam(defaultValue = "id", value = "sortBy") String sortBy,
@@ -89,7 +89,7 @@ public class StoreController {
 
         return new ResponseEntity<>(
                 storeService
-                        .findBySearchParams(pageNo, pageSize, sortBy, companyCode, latitude, longitude),
+                        .findByCompanyCodeAndSortedByDistance(pageNo, pageSize, sortBy, companyCode, latitude, longitude),
                 HttpStatus.OK);
     }
 }

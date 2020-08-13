@@ -9,6 +9,6 @@ public interface StoreService extends CrudService<StoreDto> {
 
     PageWrapper<StoreDto> findByCompanyCode(Paging paging, String companyCode);
 
-    PageWrapper<StoreDto> findBySearchParams(Integer pageNo, Integer pageSize, String sortBy,
-                                             String companyCode, Double latitude, Double longitude);
+    PageWrapper<StoreDto> findByCompanyCodeAndSortedByDistance(Integer pageNo, Integer pageSize, String sortBy,
+                                                               String companyCode, Double latitude, Double longitude);
 }
