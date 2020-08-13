@@ -1,8 +1,11 @@
 package org.example.store.service.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.validation.constraints.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressDto extends AbstractDto {
 
     @NotBlank(message = "Street can`t be null and spaces!")
