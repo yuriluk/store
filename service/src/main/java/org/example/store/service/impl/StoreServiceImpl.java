@@ -97,10 +97,22 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public PageWrapper<StoreDto> findByCompanyCode(Paging paging, String companyCode) {
         Pageable pageable = getPageable(paging);
-        Specification<Store> specification = Specification
+         Specification<Store> specification = Specification
                 .where(findByCompanyCodeLike(companyCode));
 
         Page<Store> page = storeRepository.findAll(specification, pageable);
+
+//        Page<Store> page;
+//        if (!companyCode.equals("")) {
+//            CompanyCode code = companyCodeRepository.findByCodeIgnoreCase(companyCode)
+//                    .orElseThrow(() -> new ResourceNotFoundException(companyCode));
+//            page = storeRepository.findByCompanyCode(code, pageable);
+//        } else {
+//            Specification<Store> specification = Specification
+//                    .where(findByCompanyCodeLike(companyCode));
+//
+//            page = storeRepository.findAll(specification, pageable);
+//        }
 
         List<Store> stores = page.toList();
         return
@@ -117,7 +129,6 @@ public class StoreServiceImpl implements StoreService {
     public StoreDto update(StoreDto storeDto) {
      return null;
     }
-
 
 
     private GeoLocation resolveLocation(Store store) {
@@ -189,16 +200,5 @@ public class StoreServiceImpl implements StoreService {
 
     private Pageable getPageable(Paging paging) {
         return PageRequest.of(paging.getPage(), paging.getSize());
-    }
-
-
-    private Specification<Store> getStoreSpecification(String searchParam) {
-
-        Specification<Store> specification =
-                Specification
-                        .where(findByStoreNameLike(searchParam))
-                        .or(findByStorePhoneNumberLike(searchParam))
-                        .or(findByCompanyCodeLike(searchParam));
-        return specification;
     }
 }

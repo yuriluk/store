@@ -64,4 +64,15 @@ public class StoreController {
         storeService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping()
+    public ResponseEntity<?> findByCompanyCode(
+            @RequestParam(defaultValue = "10", value = "size") Integer size,
+            @RequestParam(defaultValue = "0", value = "page") Integer page,
+            @RequestParam(defaultValue = "", value = "companyCode") String companyCode) {
+
+        Paging paging = new Paging(size, page);
+
+        return new ResponseEntity<>(storeService.findByCompanyCode(paging, companyCode), HttpStatus.OK);
+    }
 }
