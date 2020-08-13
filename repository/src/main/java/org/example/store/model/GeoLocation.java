@@ -1,17 +1,18 @@
 package org.example.store.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
 @Table(name = "geoLocations", schema="public")
 public class GeoLocation extends AbstractEntity {
 
-    @Column(name = "latitude", nullable = false, length = 15)
-    private Double latitude;
+    @Column(name = "latitude", nullable = false, length = 17)
+    private BigDecimal latitude;
 
-    @Column(name = "longitude", nullable = false, length = 15)
-    private Double longitude;
+    @Column(name = "longitude", nullable = false, length = 17)
+    private BigDecimal longitude;
 //
 //    @OneToOne
 //    @JoinColumn(name = "store_id")
@@ -26,22 +27,22 @@ public class GeoLocation extends AbstractEntity {
         super(id);
     }
 
-
-    public Double getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
+
 
 //    public Store getStore() {
 //        return store;

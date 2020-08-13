@@ -80,12 +80,12 @@ public class StoreController {
 
     @GetMapping("/byParams")
     public ResponseEntity<?> findBySearchParams(
-            @RequestParam(defaultValue = "0") Integer pageNo,
-            @RequestParam(defaultValue = "10") Integer pageSize,
-            @RequestParam(defaultValue = "id") String sortBy,
-            @RequestParam(defaultValue = "") @CustomNullableNotBlank String companyCode,
-            @RequestParam(defaultValue = "0.0") Double latitude,
-            @RequestParam(defaultValue = "0.0") Double longitude) {
+            @RequestParam(defaultValue = "0", value = "pageNo") Integer pageNo,
+            @RequestParam(defaultValue = "10", value = "pageSize") Integer pageSize,
+            @RequestParam(defaultValue = "id", value = "sortBy") String sortBy,
+            @RequestParam(defaultValue = "", value = "companyCode") String companyCode,
+            @RequestParam(defaultValue = "0.0", value = "latitude") Double latitude,
+            @RequestParam(defaultValue = "0.0", value = "longitude") Double longitude) {
 
         return new ResponseEntity<>(
                 storeService

@@ -1,37 +1,39 @@
 package org.example.store.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.example.store.service.validation.BigDecimalRange;
 
-import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GeoLocationDto extends AbstractDto {
 
     @NotNull(message = "Latitude can`t be null!")
-    @Digits(integer = 2, fraction = 15, message = "Latitude could be in format (+/-)[xx].[up to 15 digits]")
-    private double latitude;
+    @BigDecimalRange(minPrecision = 2, maxPrecision = 17, scale = 15)
+    private BigDecimal latitude;
 
     @NotNull(message = "Longitude can`t be null!")
-    @Digits(integer = 2, fraction = 15, message = "Longitude could be in format (+/-)[xx].[up to 15 digits]")
-    private double longitude;
+    @BigDecimalRange(minPrecision = 2, maxPrecision = 17, scale = 15)
+    private BigDecimal longitude;
+
 
     public GeoLocationDto() {
     }
 
-    public double getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(BigDecimal longitude) {
         this.longitude = longitude;
     }
 }
