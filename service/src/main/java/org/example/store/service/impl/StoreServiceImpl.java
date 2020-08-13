@@ -15,6 +15,7 @@ import org.example.store.service.dto.StoreDto;
 import org.example.store.service.dto.mapper.StoreMapper;
 import org.example.store.service.exception.ResourceNotFoundException;
 import org.example.store.service.exception.ServiceException;
+import org.example.store.service.util.GeoLocationHelper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -23,8 +24,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.example.store.repository.specification.StoreSpecification.*;
 
@@ -113,7 +114,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public PageWrapper<StoreDto> findByCompanyCode(Paging paging, String companyCode) {
         Pageable pageable = getPageable(paging);
-         Specification<Store> specification = Specification
+        Specification<Store> specification = Specification
                 .where(findByCompanyCodeLike(companyCode));
 
         Page<Store> page = storeRepository.findAll(specification, pageable);
@@ -130,29 +131,34 @@ public class StoreServiceImpl implements StoreService {
 
 
     @Override
-    public PageWrapper<StoreDto> findBySearchParams(Integer pageNo, Integer pageSize, String sortBy,
-                                                    String companyCode, Double latitude, Double longitude) {
+    public PageWrapper<StoreDto> findByCompanyCodeAndSortedByDistance(Integer pageNo, Integer pageSize, String sortBy,
+                                                                      String companyCode, Double latitude, Double longitude) {
 
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        Specification<Store> specification = getStoreSpecification(companyCode, latitude, longitude);
+        Specification<Store> specification = Specification.where(findByCompanyCodeLike(companyCode));
         Page<Store> page = storeRepository.findAll(specification, pageable);
         List<Store> stores = page.toList();
+
+        Map<Store, Double> mapStoreDistance = new HashMap<Store, Double>();
+        for (Store store : stores) {
+            double distance = GeoLocationHelper.calculateDistance(latitude, longitude, store.getGeoLocation());
+            mapStoreDistance.put(store, distance);
+        }
+
+        List<Store> sortedList = mapStoreDistance.entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+
         return
                 PageWrapper.of(
-                        storeMapper.toDtoList(stores),
+                        storeMapper.toDtoList(sortedList),
                         page.getTotalPages(),
                         page.getTotalElements(),
                         pageNo,
                         page.getNumberOfElements());
-    }
-
-    private Specification<Store> getStoreSpecification(String companyCode, Double latitude, Double longitude) {
-
-        Specification<Store> specification =
-                Specification
-                        .where(findByCompanyCodeLike(companyCode))
-                        .or(findByGeoLocationLatitude(latitude).and(findByGeoLocationLongitude(longitude)));
-        return specification;
     }
 
 
