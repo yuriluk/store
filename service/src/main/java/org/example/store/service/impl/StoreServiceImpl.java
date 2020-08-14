@@ -57,7 +57,7 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public StoreDto save(StoreDto storeDto) {
 
-        storeRepository.findByName(storeDto.getName())
+        storeRepository.findByNameIgnoreCase(storeDto.getName())
                 .ifPresent(value -> {
                     throw new ServiceException("Sorry, but store with name="
                             + value.getName() + " is already present! Just modify previous version.");
