@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 @Entity
-@Table(name = "geoLocations", schema="public")
+@Table(name = "geo_locations")
 public class GeoLocation extends AbstractEntity {
 
     @Column(name = "latitude", nullable = false, length = 17)
@@ -13,11 +13,6 @@ public class GeoLocation extends AbstractEntity {
 
     @Column(name = "longitude", nullable = false, length = 17)
     private BigDecimal longitude;
-//
-//    @OneToOne
-//    @JoinColumn(name = "store_id")
-//    @MapsId
-//    private Store store;
 
 
     public GeoLocation() {
@@ -43,14 +38,6 @@ public class GeoLocation extends AbstractEntity {
         this.longitude = longitude;
     }
 
-
-//    public Store getStore() {
-//        return store;
-//    }
-//
-//    public void setStore(Store store) {
-//        this.store = store;
-//    }
 
     @Override
     public boolean equals(Object o) {

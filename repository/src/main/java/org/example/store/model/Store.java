@@ -4,13 +4,13 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "stores", schema="public")
+@Table(name = "stores")
 public class Store extends AbstractEntity {
 
     @Column(name = "name", nullable = false, length = 58)
     private String name;
 
-    @Column(name = "phoneNumber", nullable = false, length = 15)
+    @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -20,11 +20,11 @@ public class Store extends AbstractEntity {
     @ManyToOne(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "store_codes",
             joinColumns = @JoinColumn(name = "store_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "companyCode_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "company_code_id", referencedColumnName = "id"))
     private CompanyCode companyCode;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "geoLocation_id")
+    @JoinColumn(name = "geo_location_id")
     private GeoLocation geoLocation;
 
 

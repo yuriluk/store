@@ -6,7 +6,7 @@ import javax.persistence.Table;
 import java.util.Objects;
 
 @Entity
-@Table(name = "companyCodes", schema = "public")
+@Table(name = "company_codes")
 public class CompanyCode extends AbstractEntity {
 
     @Column(name = "code", nullable = false, unique = true, length = 2)

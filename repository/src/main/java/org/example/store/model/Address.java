@@ -4,22 +4,22 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "addresses", schema = "public")
+@Table(name = "addresses")
 public class Address extends AbstractEntity {
 
     @Column(name = "street", nullable = false, length = 85)
     private String street;
 
-    @Column(name = "houseNumber", nullable = false, length = 10)
+    @Column(name = "house_number", nullable = false, length = 10)
     private Integer houseNumber;
 
-    @Column(name = "postalCode", nullable = false, length = 10)
+    @Column(name = "postal_code", nullable = false, length = 10)
     private Integer postalCode;
 
     @Column(name = "city", nullable = false, length = 85)
     private String city;
 
-    @Column(name = "countryCode", nullable = false, length = 3)
+    @Column(name = "country_code", nullable = false, length = 3)
     private String countryCode;
 
 
