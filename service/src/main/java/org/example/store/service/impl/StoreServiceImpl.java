@@ -10,12 +10,12 @@ import org.example.store.repository.GeoLocationRepository;
 import org.example.store.repository.StoreRepository;
 import org.example.store.service.StoreService;
 import org.example.store.service.dto.PageWrapper;
-import org.example.store.service.dto.Paging;
 import org.example.store.service.dto.StoreDto;
 import org.example.store.service.dto.mapper.StoreMapper;
 import org.example.store.service.exception.ResourceNotFoundException;
 import org.example.store.service.exception.ServiceException;
 import org.example.store.service.util.GeoLocationHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +24,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static org.example.store.repository.specification.StoreSpecification.*;
+import static org.example.store.repository.specification.StoreSpecification.findByCompanyCodeLike;
 
 
 @Service
@@ -39,7 +42,7 @@ public class StoreServiceImpl implements StoreService {
     private final CompanyCodeRepository companyCodeRepository;
     private final GeoLocationRepository geoLocationRepository;
 
-
+    @Autowired
     public StoreServiceImpl(StoreRepository storeRepository,
                             StoreMapper storeMapper,
                             AddressRepository addressRepository,
@@ -75,7 +78,7 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     @Override
     public StoreDto update(StoreDto storeDto) {
-        Store storeFromDb = storeRepository.findById(storeDto.getId())
+        storeRepository.findById(storeDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(storeDto.getId()));
 
         Store storeForUpdate = storeMapper.toEntity(storeDto);
@@ -104,42 +107,49 @@ public class StoreServiceImpl implements StoreService {
         return storeMapper.toDto(store);
     }
 
+    @Override
+    public PageWrapper<StoreDto> findAll(Pageable pageable) {
+
+        Page<Store> page = storeRepository.findAll(pageable);
+
+        return
+                PageWrapper.of(
+                        storeMapper.toDtoList(page.toList()),
+                        page.getTotalPages(),
+                        page.getTotalElements(),
+                        pageable.getPageNumber(),
+                        page.getNumberOfElements());
+    }
 
     @Override
-    public List<StoreDto> findAll(Paging paging) {
+    public List<StoreDto> findAll() {
         return storeMapper.toDtoList(storeRepository.findAll());
     }
 
 
     @Override
-    public PageWrapper<StoreDto> findByCompanyCode(Paging paging, String companyCode) {
-        Pageable pageable = getPageable(paging);
-        Specification<Store> specification = Specification
-                .where(findByCompanyCodeLike(companyCode));
+    public PageWrapper<StoreDto> findByCompanyCode(Integer pageNo, Integer pageSize, String sortBy, String companyCode) {
+        Page<Store> page = getPageOfStoresByCompanyCodeAndSorted(pageNo, pageSize, sortBy, companyCode);
 
-        Page<Store> page = storeRepository.findAll(specification, pageable);
-
-        List<Store> stores = page.toList();
         return
                 PageWrapper.of(
-                        storeMapper.toDtoList(stores),
+                        storeMapper.toDtoList(page.toList()),
                         page.getTotalPages(),
                         page.getTotalElements(),
-                        paging.getPage(),
+                        pageNo,
                         page.getNumberOfElements());
     }
 
 
     @Override
-    public PageWrapper<StoreDto> findByCompanyCodeAndSortedByDistance(Integer pageNo, Integer pageSize, String sortBy,
-                                                                      String companyCode, Double latitude, Double longitude) {
+    public PageWrapper<StoreDto> findByCompanyCodeAndSortedByDistance(Integer pageNo, Integer pageSize,
+                                                                      String sortBy, String companyCode,
+                                                                      Double latitude, Double longitude) {
 
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        Specification<Store> specification = Specification.where(findByCompanyCodeLike(companyCode));
-        Page<Store> page = storeRepository.findAll(specification, pageable);
+        Page<Store> page = getPageOfStoresByCompanyCodeAndSorted(pageNo, pageSize, sortBy, companyCode);
         List<Store> stores = page.toList();
 
-        Map<Store, Double> mapStoreDistance = new HashMap<Store, Double>();
+        Map<Store, Double> mapStoreDistance = new HashMap<>();
         for (Store store : stores) {
             double distance = GeoLocationHelper.calculateDistance(latitude, longitude, store.getGeoLocation());
             mapStoreDistance.put(store, distance);
@@ -159,6 +169,12 @@ public class StoreServiceImpl implements StoreService {
                         page.getTotalElements(),
                         pageNo,
                         page.getNumberOfElements());
+    }
+
+    private Page<Store> getPageOfStoresByCompanyCodeAndSorted(Integer pageNo, Integer pageSize, String sortBy, String companyCode) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+        Specification<Store> specification = Specification.where(findByCompanyCodeLike(companyCode));
+        return storeRepository.findAll(specification, pageable);
     }
 
 
@@ -228,8 +244,4 @@ public class StoreServiceImpl implements StoreService {
                         + " is not allowed!"));
     }
 
-
-    private Pageable getPageable(Paging paging) {
-        return PageRequest.of(paging.getPage(), paging.getSize());
-    }
 }

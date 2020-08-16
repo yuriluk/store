@@ -11,11 +11,11 @@ import javax.validation.constraints.Pattern;
 public class StoreDto extends AbstractDto {
 
     @NotBlank(message = "Name can`t be null and spaces!")
-    @Pattern(regexp = ".{2,58}", message = "Name must be more then 2 symbols, but smaller than 58")
+    @Pattern(regexp = ".{2,58}", message = "Name must be more then 2 symbols, and less or equal 58")
     private String name;
 
     @NotBlank(message = "Phone number can`t be null and spaces!")
-    @Pattern(regexp = ".{11,15}", message = "Phone number  must be more then 11 symbols, but smaller than 15")
+    @Pattern(regexp = ".{11,15}", message = "Phone number must be more then 11 symbols, and less or equal 15")
     private String phoneNumber;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

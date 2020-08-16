@@ -1,7 +1,8 @@
 package org.example.store.service;
 
 
-import org.example.store.service.dto.Paging;
+import org.example.store.service.dto.PageWrapper;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +16,8 @@ public interface CrudService<E> {
 
     E findById(Long id);
 
-    List<E> findAll(Paging paging);
+    PageWrapper<E> findAll(Pageable pageable);
+
+    List<E> findAll();
 
 }

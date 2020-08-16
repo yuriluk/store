@@ -15,9 +15,9 @@ import javax.validation.Payload;
 @Constraint(validatedBy = BigDecimalRangeValidator.class)
 @Documented
 public @interface BigDecimalRange {
-    public String message() default "{java.math.BigDecimal.range.error}";
-    public Class<?>[] groups() default {};
-    public Class<? extends Payload>[] payload() default {};
+    String message() default "{java.math.BigDecimal.range.error}";
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
 
     long minPrecision() default Long.MIN_VALUE;
     long maxPrecision() default Long.MAX_VALUE;
