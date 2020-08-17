@@ -89,11 +89,4 @@ public class DefaultExceptionHandler {
         logger.error(e.getMessage());
         return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
-
-//    @ExceptionHandler(RepositoryException.class)
-//    public ResponseEntity<Object> handleRepositoryException(RepositoryException e) {
-//        logger.error(e.getMessage());
-//        return new ResponseEntity<>(new ErrorMessage(e.getMessage()), HttpStatus.BAD_REQUEST);
-//    }
-
 }

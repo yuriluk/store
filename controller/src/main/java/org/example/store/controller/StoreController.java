@@ -1,12 +1,8 @@
 package org.example.store.controller;
 
 import org.example.store.service.StoreService;
-import org.example.store.service.dto.Paging;
 import org.example.store.service.dto.StoreDto;
-import org.example.store.service.validation.CustomNullableNotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -16,13 +12,14 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
+import java.net.URI;
+
 import static org.example.store.controller.ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid;
 
 
 @Validated
 @RestController
 @RequestMapping("/stores")
-@CrossOrigin(origins = "http://localhost:3000")
 public class StoreController {
 
     private final StoreService storeService;
@@ -34,7 +31,7 @@ public class StoreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<StoreDto> findById(@PathVariable @Positive Long id) {
-        return new ResponseEntity<>(storeService.findById(id), HttpStatus.OK);
+        return ResponseEntity.ok(storeService.findById(id));
     }
 
 
@@ -43,53 +40,55 @@ public class StoreController {
                                         BindingResult result) {
         checkBindingResultAndThrowExceptionIfInvalid(result);
         StoreDto store = storeService.save(storeDto);
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setLocation(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(store.getId()).toUri());
-        return new ResponseEntity<>(store, httpHeaders, HttpStatus.CREATED);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(store.getId()).toUri();
+        return ResponseEntity.created(location).body(store);
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<StoreDto> update(@PathVariable @Positive Long id,
-                                            @RequestBody @Valid StoreDto storeDto,
-                                            BindingResult result) {
+                                           @RequestBody @Valid StoreDto storeDto,
+                                           BindingResult result) {
         checkBindingResultAndThrowExceptionIfInvalid(result);
         storeDto.setId(id);
-        return new ResponseEntity<>(storeService.update(storeDto), HttpStatus.OK);
+        return ResponseEntity.ok(storeService.update(storeDto));
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable @Positive Long id) {
         storeService.delete(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/byCompanyCode")
+    @GetMapping()
+    public ResponseEntity<?> findAll() {
+        return ResponseEntity.ok(storeService.findAll());
+    }
+
+
+    @GetMapping("/by-company-code")
     public ResponseEntity<?> findByCompanyCode(
-            @RequestParam(defaultValue = "10", value = "size") Integer size,
-            @RequestParam(defaultValue = "0", value = "page") Integer page,
-            @RequestParam(defaultValue = "", value = "companyCode") String companyCode) {
+            @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(value = "companyCode", defaultValue = "") String companyCode) {
 
-        Paging paging = new Paging(size, page);
-
-        return new ResponseEntity<>(storeService.findByCompanyCode(paging, companyCode), HttpStatus.OK);
+        return ResponseEntity.ok(storeService.findByCompanyCode(pageNo, pageSize, sortBy, companyCode));
     }
 
 
-    @GetMapping("/sortedByDistance")
+    @GetMapping("/sorted-by-distance")
     public ResponseEntity<?> findByCompanyCodeAndSortedByDistance(
-            @RequestParam(defaultValue = "0", value = "pageNo") Integer pageNo,
-            @RequestParam(defaultValue = "10", value = "pageSize") Integer pageSize,
-            @RequestParam(defaultValue = "id", value = "sortBy") String sortBy,
-            @RequestParam(defaultValue = "", value = "companyCode") String companyCode,
-            @RequestParam(defaultValue = "0.0", value = "latitude") Double latitude,
-            @RequestParam(defaultValue = "0.0", value = "longitude") Double longitude) {
+            @RequestParam(value = "pageNo", defaultValue = "0") Integer pageNo,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(value = "companyCode", defaultValue = "") String companyCode,
+            @RequestParam(value = "latitude", defaultValue = "0.0") Double latitude,
+            @RequestParam(value = "longitude", defaultValue = "0.0") Double longitude) {
 
-        return new ResponseEntity<>(
-                storeService
-                        .findByCompanyCodeAndSortedByDistance(pageNo, pageSize, sortBy, companyCode, latitude, longitude),
-                HttpStatus.OK);
+        return ResponseEntity.ok(storeService
+                .findByCompanyCodeAndSortedByDistance(pageNo, pageSize, sortBy, companyCode, latitude, longitude));
     }
 }

@@ -63,8 +63,6 @@ public class StoreControllerIntegrationTest {
         HttpEntity<StoreDto> httpEntity = new HttpEntity<>(expectedDto);
         ResponseEntity<StoreDto> responseEntity = restTemplate.exchange("/stores", HttpMethod.POST, httpEntity, StoreDto.class);
 
-        System.out.println(responseEntity);
-
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(Objects.requireNonNull(responseEntity.getBody()).getName()).isEqualTo(expectedDto.getName());
     }
