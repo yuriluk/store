@@ -8,10 +8,10 @@ import java.util.Objects;
 @Table(name = "geo_locations")
 public class GeoLocation extends AbstractEntity {
 
-    @Column(name = "latitude", nullable = false, length = 17)
+    @Column(name = "latitude", nullable = false, length = 17, precision = 17, scale = 15)
     private BigDecimal latitude;
 
-    @Column(name = "longitude", nullable = false, length = 17)
+    @Column(name = "longitude", nullable = false, length = 17, precision = 17, scale = 15)
     private BigDecimal longitude;
 
 

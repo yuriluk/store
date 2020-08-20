@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS stores
     phone_number VARCHAR(15)  NOT NULL,
     address_id bigint NULL,
     geo_location_id BIGINT NULL,
-    constraint store_address
+    constraint FK_store_address
         foreign key (address_id) references addresses (id),
-    constraint store_location
+    constraint FK_store_location
         foreign key (geo_location_id) references geo_locations (id)
 );
 
@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS store_codes
 (
     company_code_id BIGINT NOT NULL,
     store_id  BIGINT   NOT NULL,
-    constraint store_codes_company_code_id
+    constraint FK_store_codes_company_code
         foreign key (company_code_id) references company_codes (id),
-    constraint store_codes_store_id
+    constraint FK_store_codes_store
         foreign key (store_id) references stores (id)
 );

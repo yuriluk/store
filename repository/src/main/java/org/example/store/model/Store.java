@@ -1,5 +1,8 @@
 package org.example.store.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -13,17 +16,19 @@ public class Store extends AbstractEntity {
     @Column(name = "phone_number", nullable = false, length = 15)
     private String phoneNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "address_id")
     private Address address;
 
-    @ManyToOne(cascade=CascadeType.MERGE, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "store_codes",
             joinColumns = @JoinColumn(name = "store_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "company_code_id", referencedColumnName = "id"))
     private CompanyCode companyCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "geo_location_id")
     private GeoLocation geoLocation;
 
