@@ -78,15 +78,17 @@ public class StoreServiceImpl implements StoreService {
     @Transactional
     @Override
     public StoreDto update(StoreDto storeDto) {
-        storeRepository.findById(storeDto.getId())
+        Store storeFromDb = storeRepository.findById(storeDto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(storeDto.getId()));
 
         Store storeForUpdate = storeMapper.toEntity(storeDto);
-        storeForUpdate.setAddress(resolveAddress(storeForUpdate));
-        storeForUpdate.setCompanyCode(getCompanyCodeOrThrowException(storeForUpdate));
-        storeForUpdate.setGeoLocation(resolveLocation(storeForUpdate));
+        storeFromDb.setName(storeDto.getName());
+        storeFromDb.setPhoneNumber(storeDto.getPhoneNumber());
+        storeFromDb.setAddress(resolveAddress(storeForUpdate));
+        storeFromDb.setCompanyCode(getCompanyCodeOrThrowException(storeForUpdate));
+        storeFromDb.setGeoLocation(resolveLocation(storeForUpdate));
 
-        return storeMapper.toDto(storeRepository.save(storeForUpdate));
+        return storeMapper.toDto(storeFromDb);
     }
 
 
