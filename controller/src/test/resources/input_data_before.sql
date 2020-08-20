@@ -10,14 +10,17 @@ INSERT INTO addresses(street, house_number, postal_code, city, country_code)
 INSERT INTO addresses(street, house_number, postal_code, city, country_code)
                                             VALUES('Morskaya', 35, 320077, 'Slonim', 'BY');
 
+
 INSERT INTO geo_locations(latitude, longitude) VALUES(53.908508, 27.432272);
 INSERT INTO geo_locations(latitude, longitude) VALUES(53.8508, 27.4);
 INSERT INTO geo_locations(latitude, longitude) VALUES(53.7, 27.5);
 
-
-INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Test shop', '+375291234567', 1, 1);
-INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Shop 2', '+375291112233', 2, 2);
-INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Shop 3', '+375297755666', 3, 3);
+INSERT INTO stores (id, name, phone_number, geo_location_id, address_id) VALUES (
+        nextval ('hibernate_sequence'), 'Test shop', '+375291234567', 1, 1);
+INSERT INTO stores (id, name, phone_number, geo_location_id, address_id) VALUES (
+        nextval ('hibernate_sequence'), 'Shop 2', '+375291112233', 2, 2);
+INSERT INTO stores (id, name, phone_number, geo_location_id, address_id) VALUES (
+        nextval ('hibernate_sequence'), 'Shop 3', '+375297755666', 3, 3);
 
 INSERT INTO store_codes(company_code_id, store_id) VALUES(1, 1);
 INSERT INTO store_codes(company_code_id, store_id) VALUES(2, 2);

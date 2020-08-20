@@ -3,6 +3,7 @@ package org.example.store.exception.handler;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.store.controller.StoreController;
 import org.example.store.exception.IllegalRequestException;
 import org.example.store.service.exception.ResourceNotFoundException;
 import org.example.store.service.exception.ServiceException;
@@ -22,7 +23,7 @@ import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
-@ControllerAdvice
+@ControllerAdvice(assignableTypes = StoreController.class)
 public class DefaultExceptionHandler {
 
     private static final Logger logger = LogManager.getLogger(DefaultExceptionHandler.class);
