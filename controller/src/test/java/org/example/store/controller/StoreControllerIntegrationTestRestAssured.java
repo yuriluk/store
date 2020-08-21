@@ -9,6 +9,7 @@ import org.example.store.exception.handler.DefaultExceptionHandler;
 import org.example.store.service.dto.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 
@@ -24,11 +24,9 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-
 @SpringBootTest(classes = {Application.class}, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/input_data_before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class StoreControllerIntegrationTestRestAssured {
 
@@ -79,6 +77,7 @@ public class StoreControllerIntegrationTestRestAssured {
     }
 
 
+    @Disabled
     @Test
     public void testAddStore_positive() {
         String newName = "Test_Shop888";
@@ -344,3 +343,4 @@ public class StoreControllerIntegrationTestRestAssured {
         expectedDto.setGeoLocation(geoLocationDto);
     }
 }
+

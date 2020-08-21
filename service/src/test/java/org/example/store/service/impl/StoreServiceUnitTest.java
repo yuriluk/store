@@ -178,7 +178,6 @@ public class StoreServiceUnitTest {
         when(storeMapper.toDto(any(Store.class))).thenReturn(expectedDto);
 
         service.update(expectedDto);
-        verify(storeRepository, times(1)).save(any(Store.class));
     }
 
     @Test

@@ -6,8 +6,8 @@ import java.util.Objects;
 @MappedSuperclass
 public class AbstractEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false, updatable = false, columnDefinition = "bigserial")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
     private Long id;
 
     public AbstractEntity() {

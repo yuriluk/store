@@ -15,6 +15,7 @@ INSERT INTO geo_locations(latitude, longitude) VALUES(53.908508, 27.432272);
 INSERT INTO geo_locations(latitude, longitude) VALUES(53.8508, 27.4);
 INSERT INTO geo_locations(latitude, longitude) VALUES(53.7, 27.5);
 
+
 INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Test shop', '+375291234567', 1, 1);
 INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Shop 2', '+375291112233', 2, 2);
 INSERT INTO stores (name, phone_number, geo_location_id, address_id) VALUES ('Shop 3', '+375297755666', 3, 3);
