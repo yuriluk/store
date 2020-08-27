@@ -2,21 +2,20 @@
 Store Management restfull application.
 
 Perform the following operations:
-CRUD operations for Store.
+1. Find stores by a company code.
+2. Find stores by a company code and sorted ascending by distance for the provided coordinates.
+3. CRUD operations.
+4. Two find endpoints also support sorting by any store field.
+5. Search can be done by store name, location(latitude and longitude).
 
 Tools used:
-Spring Boot.
-JDK version: 8. Streams.
-Database connection pool: HikariCP.
-Spring JPA Data.
-Build tool: Apache Maven 3.6+. Multi-module project.
-Web server: Apache Tomcat.
-Application container: Spring IoC. Spring Framework.
-Spring configured via Java config.
-Database: PostgresSQL 10.+
-
-
-Search can be done by store name, location(latitude and longitude).
+• Spring boot
+• Unit and integration test coverage (JUnit 5, Restassured, Spring boot tests)
+• PostgresSQL 10.+
+• Database connection pool: HikariCP.
+• Spring Data JPA
+• Multi-module Maven project
+• Swagger
 
 
 # How to run?
